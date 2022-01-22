@@ -2,7 +2,7 @@ use sdl2::pixels::Color;
 
 use crate::util::Vector;
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Clone)]
 pub enum CellState {
     Empty,
     Food,
