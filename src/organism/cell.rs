@@ -7,20 +7,21 @@ pub enum CellState {
     Empty,
     Food,
     Producer,
-    Mouth
+    Mouth,
 }
 
 impl CellState {
     pub fn color(&self) -> Color {
         match self {
-            CellState::Empty => Color::BLACK,
-            CellState::Food => Color::BLUE,
-            CellState::Producer => Color::GREEN,
-            CellState::Mouth => Color::YELLOW
+            | CellState::Empty => Color::BLACK,
+            | CellState::Food => Color::BLUE,
+            | CellState::Producer => Color::GREEN,
+            | CellState::Mouth => Color::YELLOW,
         }
     }
 }
 
+#[derive(Clone)]
 pub struct Cell {
     pub pos: Vector,
     pub state: CellState,

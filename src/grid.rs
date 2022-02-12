@@ -3,6 +3,7 @@ use crate::{
     util::{CellsToRender, Vector},
 };
 
+#[derive(Clone)]
 pub struct Grid {
     grid: Vec<Cell>,
     dimensions: Vector,
@@ -15,7 +16,9 @@ impl Grid {
         let mut grid = Vec::with_capacity((dimensions.x * dimensions.y) as usize);
         for y in 0..dimensions.y {
             for x in 0..dimensions.x {
-                grid.push(Cell::new(Vector::new(x, y)));
+                grid.push(Cell::new(
+                    Vector::new(x, y),
+                ));
             }
         }
 
@@ -42,11 +45,11 @@ impl Grid {
         cells_to_render: &mut CellsToRender,
     ) {
         match self.get_mut(pos).ok_or("".to_string()) {
-            Ok(cell) => {
+            | Ok(cell) => {
                 cell.state = state;
                 cells_to_render.push(cell.pos.clone());
             }
-            Err(_) => {
+            | Err(_) => {
                 return;
             }
         }
@@ -60,15 +63,22 @@ impl Grid {
     ) {
         let pos = pos.into();
 
-        if self.match_state(&pos, CellState::Empty) {
-            self.set_state(pos, state, cells_to_render);
+        if self.match_state(
+            &pos,
+            CellState::Empty,
+        ) {
+            self.set_state(
+                pos,
+                state,
+                cells_to_render,
+            );
         }
     }
 
     pub fn match_state(&self, pos: impl Into<Vector>, state: CellState) -> bool {
         match self.get(pos) {
-            Some(cell) => cell.state == state,
-            None => false
+            | Some(cell) => cell.state == state,
+            | None => false,
         }
     }
 }
