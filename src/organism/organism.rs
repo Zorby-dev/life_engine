@@ -1,4 +1,3 @@
-use hashbrown::{HashSet, HashMap};
 use rand::Rng;
 
 use crate::{
@@ -8,12 +7,7 @@ use crate::{
 
 use super::cell::CellState;
 
-pub enum OrganismState {
-    Live,
-    Die
-}
-
-#[derive(Clone, PartialEq, Eq, Hash, Debug)]
+#[derive(Clone)]
 pub struct Organism {
     pos: Vector,
     cells: Vec<Vector>,
@@ -22,6 +16,11 @@ pub struct Organism {
 }
 
 const FOOD_PROD_PROB: u32 = 5;
+
+pub enum OrganismState {
+    Live,
+    Die,
+}
 
 impl Organism {
     pub fn new(pos: impl Into<Vector>, cells: Vec<Vector>) -> Self {
@@ -90,7 +89,7 @@ impl Organism {
     pub fn update(
         &mut self,
         grid: &mut Grid,
-        organisms: &mut HashMap<Vector, Organism>,
+        organisms: &mut Vec<Organism>,
         cells_to_render: &mut CellsToRender,
     ) -> OrganismState {
         if self.age == 1000 {
@@ -101,7 +100,6 @@ impl Organism {
                     cells_to_render,
                 );
             }
-            
             return OrganismState::Die;
         }
 
@@ -118,8 +116,7 @@ impl Organism {
                 &offspring_pos,
                 grid,
             ) {
-                organisms.insert(
-                    offspring_pos.clone(),
+                organisms.push(
                     self.clone_with_cells(
                         &offspring_pos,
                         grid,
