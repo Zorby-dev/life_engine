@@ -16,63 +16,44 @@ impl Vector {
     }
 
     pub fn down(&self) -> Self {
-        Self::new(
-            self.x,
-            self.y + 1,
-        )
+        Self::new(self.x, self.y + 1)
     }
 
     pub fn up(&self) -> Self {
-        Self::new(
-            self.x,
-            self.y - 1,
-        )
+        Self::new(self.x, self.y - 1)
     }
 
     pub fn left(&self) -> Self {
-        Self::new(
-            self.x - 1,
-            self.y,
-        )
+        Self::new(self.x - 1, self.y)
     }
 
     pub fn right(&self) -> Self {
-        Self::new(
-            self.x + 1,
-            self.y,
-        )
+        Self::new(self.x + 1, self.y)
     }
 
     pub fn down_left(&self) -> Self {
-        Self::new(
-            self.x - 1,
-            self.y + 1,
-        )
+        Self::new(self.x - 1, self.y + 1)
     }
 
     pub fn up_left(&self) -> Self {
-        Self::new(
-            self.x - 1,
-            self.y - 1,
-        )
+        Self::new(self.x - 1, self.y - 1)
     }
 
     pub fn down_right(&self) -> Self {
-        Self::new(
-            self.x + 1,
-            self.y + 1,
-        )
+        Self::new(self.x + 1, self.y + 1)
     }
 
     pub fn up_right(&self) -> Self {
-        Self::new(
-            self.x + 1,
-            self.y - 1,
-        )
+        Self::new(self.x + 1, self.y - 1)
     }
 
     pub fn cross_neighbors(&self) -> Vec<Self> {
-        vec![self.left(), self.right(), self.up(), self.down()]
+        vec![
+            self.left(),
+            self.right(),
+            self.up(),
+            self.down()
+        ]
     }
 
     pub fn diagonal_neighbors(&self) -> Vec<Self> {
@@ -80,7 +61,7 @@ impl Vector {
             self.up_left(),
             self.up_right(),
             self.down_left(),
-            self.down_right(),
+            self.down_right()
         ]
     }
 
@@ -93,7 +74,7 @@ impl Vector {
             self.up_left(),
             self.up_right(),
             self.down_left(),
-            self.down_right(),
+            self.down_right()
         ]
     }
 }
@@ -122,7 +103,7 @@ impl Add<Vector> for Vector {
     fn add(self, rhs: Vector) -> Self::Output {
         Self {
             x: self.x + rhs.x,
-            y: self.y + rhs.y,
+            y: self.y + rhs.y
         }
     }
 }
@@ -133,7 +114,7 @@ impl Add<&Vector> for Vector {
     fn add(self, rhs: &Vector) -> Self::Output {
         Self {
             x: self.x + rhs.x,
-            y: self.y + rhs.y,
+            y: self.y + rhs.y
         }
     }
 }
@@ -144,16 +125,11 @@ impl Add<&Vector> for &Vector {
     fn add(self, rhs: &Vector) -> Self::Output {
         Vector {
             x: self.x + rhs.x,
-            y: self.y + rhs.y,
+            y: self.y + rhs.y
         }
     }
 }
 
 pub fn pos_to_rect(pos: &Vector, size: &Vector) -> Rect {
-    Rect::new(
-        pos.x,
-        pos.y,
-        size.x as u32,
-        size.y as u32,
-    )
+    Rect::new(pos.x, pos.y, size.x as u32, size.y as u32)
 }
