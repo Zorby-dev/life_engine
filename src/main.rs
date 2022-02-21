@@ -19,7 +19,7 @@ fn main() -> Result<(), String> {
         mut grid,
         mut cells_to_render,
         mut organisms,
-        organisms_shadow
+        mut organisms_shadow
     ) = engine::init()?;
 
     let mut canvas = renderer::init(window)?;
@@ -39,8 +39,9 @@ fn main() -> Result<(), String> {
             &mut grid,
             &mut cells_to_render,
             &mut organisms,
+            &mut organisms_shadow
         )? {
-            | EngineState::Continue(new_orgs) => organisms = new_orgs,
+            | EngineState::Continue() => (),
             | EngineState::Exit => break 'main_loop,
         }
 

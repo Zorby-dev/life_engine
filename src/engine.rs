@@ -1,4 +1,8 @@
 use sdl2::{event::Event, mouse::MouseButton, video::Window, EventPump};
+use hashbrown::{HashMap};
+
+const WIDTH: i32 = 100;
+const HEIGHT: i32 = 100;
 
 use crate::{
     grid::Grid,
@@ -17,8 +21,8 @@ pub fn init() -> Result<
         EventPump,
         Grid,
         CellsToRender,
-        Vec<Organism>,
-        Vec<Organism>
+        HashMap<Vector, Organism>,
+        HashMap<Vector, Organism>
     ),
     String,
 > {
@@ -26,11 +30,15 @@ pub fn init() -> Result<
 
     let video = context.video()?;
 
+    let settings = Settings {
+        cell_size: Vector::new(5, 5),
+    };
+
     let window = video
         .window(
             "Life Engine",
-            800,
-            600,
+            (WIDTH * settings.cell_size.x) as u32,
+            (HEIGHT * settings.cell_size.y) as u32,
         )
         .opengl()
         .position_centered()
@@ -39,15 +47,11 @@ pub fn init() -> Result<
 
     let event_pump = context.event_pump()?;
 
-    let settings = Settings {
-        cell_size: Vector::new(1, 1),
-    };
-
     let cells_to_render = vec![];
 
-    let grid = Grid::new((800, 600));
+    let grid = Grid::new((WIDTH, HEIGHT));
 
-    let organisms = Vec::with_capacity(800 * 600);
+    let organisms = HashMap::with_capacity((WIDTH * HEIGHT) as usize);
 
     let organisms_shadow = organisms.clone();
 
@@ -63,7 +67,7 @@ pub fn init() -> Result<
 }
 
 pub enum EngineState {
-    Continue(Vec<Organism>),
+    Continue(),
     Exit,
 }
 
@@ -72,7 +76,8 @@ pub fn update(
     settings: &Settings,
     grid: &mut Grid,
     cells_to_render: &mut CellsToRender,
-    organisms: &mut Vec<Organism>,
+    mut organisms: &mut HashMap<Vector, Organism>,
+    organisms_shadow: &mut HashMap<Vector, Organism>
 ) -> Result<EngineState, String> {
     let cell_size_x = settings.cell_size.x as i32;
     let cell_size_y = settings.cell_size.y as i32;
@@ -112,31 +117,32 @@ pub fn update(
                     CellState::Producer,
                     cells_to_render,
                 );
-                organisms.push(
+                organisms.insert(
+                    (real_x, real_y).into(),
                     Organism::new(
                         (
                             real_x, real_y,
                         ),
                         vec![Vector::new(-1, -1), Vector::new(0, 0), Vector::new(1, 1)],
                     ),
-                )
+                );
             }
             | _ => {}
         }
     }
 
-    let mut new_organisms = Vec::with_capacity(organisms.len());
+    organisms_shadow.clone_from(&organisms);
 
-    for organism in organisms {
+    for (pos, organism) in organisms_shadow.iter_mut() {
         match organism.update(
             grid,
-            &mut new_organisms,
+            &mut organisms,
             cells_to_render,
         ) {
-            | OrganismState::Live => new_organisms.push(organism.clone()),
-            | OrganismState::Die => {}
+            OrganismState::Live => {},
+            OrganismState::Die => { organisms.remove(pos); },
         }
     }
 
-    Ok(EngineState::Continue(new_organisms))
+    Ok(EngineState::Continue())
 }

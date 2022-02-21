@@ -4,7 +4,7 @@ use sdl2::rect::Rect;
 
 pub type CellsToRender = Vec<Vector>;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Vector {
     pub x: i32,
     pub y: i32,
